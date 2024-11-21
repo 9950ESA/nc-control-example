@@ -8,6 +8,23 @@ class rectangle:
     height = 100
     color = (255, 0, 0)
 
+    def __init__(self, x, y, width, height, color):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color = color
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+
+    def move_on(self, rect, x_fraction, y_fraction):
+        self.x = rect.x + x_fraction * rect.width
+        self.y = rect.y + y_fraction * rect.height
+
+    def get_fraction(self, rect):
+        return (self.x - rect.x) / rect.width, (self.y - rect.y) / rect.height
+
 
 # Initialize Pygame
 pygame.init()
@@ -17,15 +34,19 @@ width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Moving Box Animation")
 
-# Define colors
-black = (0, 0, 0)
-red = (255, 0, 0)
+PADDING = 20
 
-# Box properties
-box_size = 50
-box_x = 0
-box_y = (height - box_size) // 2
-box_speed = 5
+plate_top = rectangle(PADDING, PADDING, 150, 200, (100, 100, 100))
+print_head_top = rectangle(40, 40, 10, 10, (255, 0, 0))
+plate_side = rectangle(PADDING + plate_top.width + PADDING, 100, 150, 120, (100, 100, 100))
+print_head_side = rectangle(300, 50, 10, 10, (255, 0, 0))
+
+print_head_top.move_on(plate_top, 0, 0)
+print_head_side.move_on(plate_side, 0, 0)
+
+x = 0
+y = 0
+go_right = True
 
 # Main game loop
 running = True
@@ -34,20 +55,32 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Move the box
-    box_x += box_speed
-    if box_x > width:
-        box_x = -box_size
-
     # Fill the screen with black
-    screen.fill(black)
+    screen.fill((0,0,0))
+
+    print_head_top.move_on(plate_top, x, y)
+    print_head_side.move_on(plate_side, x, y)
+
+    if x > 1:
+        go_right = False
+    elif x < 0:
+        go_right = True
+
+    if go_right:
+        x += 0.01
+        y += 0.01
+    else:
+        x -= 0.01
+        y -= 0.01
 
     # Draw the box
-    pygame.draw.rect(screen, red, (box_x, box_y, box_size, box_size))
+    plate_top.draw(screen)
+    print_head_top.draw(screen)
+    plate_side.draw(screen)
+    print_head_side.draw(screen)
 
     # Update the display
     pygame.display.flip()
-
     # Cap the frame rate
     pygame.time.Clock().tick(60)
 
