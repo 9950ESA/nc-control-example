@@ -42,5 +42,3 @@ class printer_ui: # two rectangles, one for top view, one for side view drawn si
     def draw(self, screen):
         self.top_view.draw(screen)
         self.side_view.draw(screen)
-        
-        

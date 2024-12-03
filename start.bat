@@ -1,10 +1,10 @@
 @echo off
 
-start cmd /k "python -m http.server 12345"
-
-
-start cmd /k "python printer.py"
-
+REM Start the simulator in a new command prompt window
 start cmd /k "python simulator.py"
-REM Exit the script
+
+REM Start the client in another new command prompt window
+start cmd /k "python client.py"
+
+REM Exit the batch script
 exit
